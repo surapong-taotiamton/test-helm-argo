@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami-deployment
+  labels:
+    app: whoami
+spec:
+  selector:
+    matchLabels:
+      app: whoami-app
+  template:
+    metadata:
+      labels:
+        app: whoami-app
+    spec:
+      containers:
+        - name: whoami-container
+          image: traefik/whoami
+          ports:
+            - containerPort: {{ .Values.port }}
+          env:
+            - name: "OWNER"
+              value: {{ .Values.owner }}
+            - name: "TEST_VERSION"
+              value: {{ .Values.version }}
+            - name: "WHOAMI_PORT_NUMBER"
+              value: {{ .Values.port | quote }}
+
+---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: whoami-ingress
+# spec:
+#   rules:
+#     - host: {{ .Values.domain }}
+#       http:
+#         paths:
+#         - path: /
+#           pathType: Prefix
+#           backend:
+#             service:
+#               name: whoami-service
+#               port:
+#                 number: {{ .Values.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami-service
+spec:
+  selector:
+    app: whoami-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: {{ .Values.port }}
+  type: ClusterIP
+
+---
+
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: demo-argocd-route
+spec:
+  host: {{ .Values.domain }}
+  to:
+    kind: Service
+    name: whoami-service
+    weight: 100
+  tls:
+    termination: edge
+  port:
+    targetPort: {{ .Values.port }}
+  wildcardPolicy: None

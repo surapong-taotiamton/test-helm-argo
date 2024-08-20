@@ -1,0 +1,4 @@
+domain: "company-ui-qa.test"
+owner: "COMPANY DEV"
+version: "1.0.0"
+port: 8080
