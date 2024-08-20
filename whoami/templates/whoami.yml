@@ -59,18 +59,18 @@ spec:
 
 ---
 
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: demo-argocd-route
-spec:
-  host: {{ .Values.domain }}
-  to:
-    kind: Service
-    name: whoami-service
-    weight: 100
-  tls:
-    termination: edge
-  port:
-    targetPort: {{ .Values.port }}
-  wildcardPolicy: None
+# kind: Route
+# apiVersion: route.openshift.io/v1
+# metadata:
+#   name: demo-argocd-route
+# spec:
+#   host: {{ .Values.domain }}
+#   to:
+#     kind: Service
+#     name: whoami-service
+#     weight: 100
+#   tls:
+#     termination: edge
+#   port:
+#     targetPort: {{ .Values.port }}
+#   wildcardPolicy: None
